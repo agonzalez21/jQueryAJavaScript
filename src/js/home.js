@@ -97,6 +97,45 @@ fetch('https://randomuser.me/api/')
 
 // ObtenerUsuarioJS()
 
+
+async function LoadUsers() {
+
+  console.log('Obtener usuarios')
+
+  const urlUsuarios = 'https://randomuser.me/api/'
+  const $playListFriends = document.getElementById('playlistFriends')
+
+  async function getUser(url) {
+    const promerUser = await fetch(urlUsuarios)
+    const userData = await promerUser.json()
+    if (userData.results.length > 0)
+      return userData
+
+    throw new Error('Error obteniendo el usuario')
+  }
+
+  function crearHTMLUsuario(usuario) {
+    return (`
+      <li class="playlistFriends-item">
+        <a href="#">
+          <img src="${usuario.picture.medium}" alt="echame la culpa" />
+          <span>
+            ${usuario.name.first} ${usuario.name.last}
+          </span>
+        </a>
+      </li>`)
+  }
+
+  let htmlUsuarios = ''
+  for (let cantidadUsuarios = 0; cantidadUsuarios < 8; cantidadUsuarios++) {
+    let informacionUsuario = await getUser(urlUsuarios)
+    let usuario = informacionUsuario.results[0]
+    htmlUsuarios += crearHTMLUsuario(usuario)
+  }
+
+  $playListFriends.innerHTML = htmlUsuarios
+}
+
 (async function load() {
   //await
   //action
@@ -332,6 +371,6 @@ fetch('https://randomuser.me/api/')
   //   'Titulo de la peli' +
   //   '</h4></div> '
 
-
+  LoadUsers()
 
 })()
